@@ -136,7 +136,7 @@ class ComplexType extends Type
             } else {
                 $getterCode = '  return $this->' . $name . ';' . PHP_EOL;
             }
-            $getter = new PhpFunction('public', 'get' . ucfirst($name), '', $getterCode, $getterComment);
+            $getter = new PhpFunction('public', 'get' . $this->underscoreToCamel($name), '', $getterCode, $getterComment);
             $accessors[] = $getter;
 
             $setterComment = new PhpDocComment();
@@ -158,7 +158,7 @@ class ComplexType extends Type
             $setterCode .= '  return $this;' . PHP_EOL;
             $setter = new PhpFunction(
                 'public',
-                'set' . ucfirst($name),
+                'set' . $this->underscoreToCamel($name),
                 $this->buildParametersString(
                     array($name => $typeHint),
                     true,
@@ -191,6 +191,18 @@ class ComplexType extends Type
         }
     }
 
+    protected function underscoreToCamel($string, $capitalizeFirstCharacter = true)
+    {
+
+        $str = str_replace(' ', '', ucwords(str_replace('_', ' ', $string)));
+
+        if (!$capitalizeFirstCharacter) {
+            $str[0] = strtolower($str[0]);
+        }
+
+        return $str;
+    }
+    
     /**
      * Determine parent class
      *
